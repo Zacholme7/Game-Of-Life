@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Home</title>
+	<link rel="stylesheet" href="../static/css/style.css">
+	</script>
+</head>
+
+<body>
+	<!-- control header -->
+	<div class="header">
+		<button type="button" class="btn-style" > Start </button>
+		<button type="button" class="btn-style" > Pause </button>
+		<button type="button" class="btn-style" > Reset </button>
+
+	</div>
+
+	<!-- grid -->
+	<div class="grid">
+		<table class="main-table" onclick="toggleTable(event)">
+		{% for i in range(75) %}
+			<tr>
+			{% for i in range(125) %}
+				<td></td>	
+			{%endfor%}
+			</tr>
+
+		{%endfor%}
+		</table>
+	</div>
+	<script src="../static/js/main.js"></script>
+</body>
+</html>
