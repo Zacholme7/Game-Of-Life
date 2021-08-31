@@ -1,36 +1,48 @@
-// Gets the row and the cols of each cell on click
-const table = document.querySelector('.main-table');
-const rows = document.querySelectorAll('tr');
-const rowsArray = Array.from(rows);
-var rowIndex = 0
-var columns = 0
-var columnIndex = 0
+// GAME OF LIFE
+// ------------------------------------------------------
 
-table.addEventListener('click', (event) => {
-  rowIndex = rowsArray.findIndex(row => row.contains(event.target));
-  columns = Array.from(rowsArray[rowIndex].querySelectorAll('td'));
-  columnIndex = columns.findIndex(column => column == event.target);
-})
 
-// Creates the starting grid and populates it will all 0's
+// creates default starting grids
 grid = []
 gridOutput = []
+conditioner = true
 for(var i = 0; i < 75; i++){
 	grid.push(new Array(125).fill(0))
 	gridOutput.push(new Array(125).fill(0))
 }
 
-// sets the cells, mainly just for the starting screen
-window.toggleTable = function (event) {
-	if(event.target.tagName == "TD"){
-		event.target.style.backgroundColor = "black";
+// sleep function to slow down execution
+function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Gets the row and the cols of each cell on click
+const table = document.querySelector('.main-table');
+const rows = document.querySelectorAll('tr');
+const rowsArray = Array.from(rows);
+table.addEventListener('click', (event) => {
+	var rowIndex = 0;
+	var columns = 0;
+	var columnIndex = 0;
+	rowIndex = rowsArray.findIndex(row => row.contains(event.target));
+	columns = Array.from(rowsArray[rowIndex].querySelectorAll('td'));
+	columnIndex = columns.findIndex(column => column == event.target);
+
+	if(grid[rowIndex][columnIndex] == 0){
 		grid[rowIndex][columnIndex] = 1
 		gridOutput[rowIndex][columnIndex] = 1
-  }
-}
+		event.target.style.backgroundColor = "black"
+	} else {
+		grid[rowIndex][columnIndex] = 0
+		gridOutput[rowIndex][columnIndex] = 0
+		event.target.style.backgroundColor = "#c7c7c7"
+	}
+
+})
 
 // Resets the grid, sets all background colors to starting and resets grid to off
 function resetGrid(){
+	conditioner = false
 	for(var i = 0, row; row = table.rows[i]; i++){
 		for(var j = 0, col; col = row.cells[j]; j++){
 			col.style.backgroundColor = "#c7c7c7";
@@ -40,30 +52,25 @@ function resetGrid(){
 	}	
 }
 
-
-// Rules for GOL
-// ----------------
-// when cell is alive (1)
-// 	less than 2 neighbors -> dies
-// 	more than 3 neightbors -> dies
-// 	else -> lives
-// when cell is dead (0)
-// 	3 neighbors -> becomes alive
-
-
 // main function loop to update, redraw, handle pause logic
-function execute(){
-	// store and render output
-	for(var i = 0; i < 75; i++){
-		for(var j = 0; j < 125; j++){
-			gridOutput[i][j] = grid[i][j]
-		}
-	}
+async function execute(){
+	conditioner = true
+	while (conditioner){
+		// update to the next grid, call the update grid function or just preform operation here
+		updateGrid()
 
-	// call to a function to render the grid onto the screen
-	renderGrid()
-	// update to the next grid, call the update grid function or just preform operation here
-	updateGrid()
+		// store and render output
+		for(var i = 0; i < 75; i++){
+			for(var j = 0; j < 125; j++){
+				gridOutput[i][j] = grid[i][j]
+			}
+		}
+
+		// call to a function to render the grid onto the screen
+		renderGrid()
+		await sleep(100)
+
+	}
 }
 
 // renders the current grid state to the screen by changing the background colors appropriately
@@ -81,14 +88,12 @@ function renderGrid(){
 
 // updates the grid to the next generation
 function updateGrid(){
-	for(var i = 1; i < 75; i++){
-		for(var j = 1; j < 125; j++){
+	for(var i = 1; i < 73; i++){
+		for(var j = 1; j < 123; j++){
 			var neighbors = gridOutput[i-1][j-1] + gridOutput[i][j-1] + gridOutput[i+1][j-1] +
 					gridOutput[i-1][j]   + 			    gridOutput[i+1][j] + 
 					gridOutput[i-1][j+1] + gridOutput[i][j+1] + gridOutput[i+1][j+1]
 
-			// if cell alive, stays alive only if 2 or 3 neighbors
-			// if cell dead, becomes alive if it has 3 neighbors
 			if(gridOutput[i][j]){
 				grid[i][j] = neighbors == 2 || neighbors == 3
 			} else {
@@ -98,12 +103,7 @@ function updateGrid(){
 	}
 }
 
-
+// sets the pause conditioner to stop execution
 function pauseExecution(){
-
+	conditioner = false
 }
-
-
-
-
-
