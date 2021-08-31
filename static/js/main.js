@@ -1,7 +1,6 @@
 // GAME OF LIFE
 // ------------------------------------------------------
 
-
 // creates default starting grids
 grid = []
 gridOutput = []
@@ -88,11 +87,11 @@ function renderGrid(){
 
 // updates the grid to the next generation
 function updateGrid(){
-	for(var i = 1; i < 73; i++){
-		for(var j = 1; j < 123; j++){
-			var neighbors = gridOutput[i-1][j-1] + gridOutput[i][j-1] + gridOutput[i+1][j-1] +
-					gridOutput[i-1][j]   + 			    gridOutput[i+1][j] + 
-					gridOutput[i-1][j+1] + gridOutput[i][j+1] + gridOutput[i+1][j+1]
+	for(var i = 0; i < 75; i++){
+		for(var j = 0; j < 125; j++){
+			var neighbors = gridOutput[mod(i-1, 75)][mod(j-1, 125)] + gridOutput[i][mod(j-1, 125)] + gridOutput[mod(i+1, 75)][mod(j-1, 125)] +
+					gridOutput[mod(i-1, 75)][j]   + 			    	         gridOutput[mod(i+1, 75)][j] + 
+					gridOutput[mod(i-1, 75)][mod(j+1, 125)] + gridOutput[i][mod(j+1, 125)] + gridOutput[mod(i+1, 75)][mod(j+1, 125)]
 
 			if(gridOutput[i][j]){
 				grid[i][j] = neighbors == 2 || neighbors == 3
@@ -106,4 +105,22 @@ function updateGrid(){
 // sets the pause conditioner to stop execution
 function pauseExecution(){
 	conditioner = false
+}
+
+// fills the grid with randomly generated values
+function generateRandom(){
+	resetGrid()
+	for(var i = 0; i < 75; i++){
+		for(var j = 0; j < 125; j++){
+			var rand = Math.round(Math.random())
+			grid[i][j] = rand;
+			gridOutput[i][j] = rand;
+		}
+	}
+	renderGrid()
+}
+
+// mod function so it acts like the python modulo rather than a remainder
+function mod(a, b){
+	return ((a % b) + b) % b
 }
