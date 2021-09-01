@@ -4,15 +4,25 @@
 	<title>Home</title>
 	<link rel="stylesheet" href="../static/css/style.css">
 	</script>
+	<script src="https://kit.fontawesome.com/64eca46903.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
 	<!-- control header -->
 	<div class="header">
-		<button type="button" class="btn-style" onclick="execute()"> Start </button>
-		<button type="button" class="btn-style" onclick="pauseExecution()"> Pause </button>
-		<button type="button" class="btn-style" onclick="resetGrid(event)"> Reset </button>
-		<button type="button" class="btn-style" onclick="generateRandom()"> Random </button>
+		<div class="controls">
+			<button type="button" class="btn-style" onclick="execute()"> Start </button>
+			<button type="button" class="btn-style" onclick="pauseExecution()"> Pause </button>
+			<button type="button" class="btn-style" onclick="resetGrid(event)"> Reset </button>
+			<button type="button" class="btn-style" onclick="generateRandom()"> Random </button>
+		</div>
+		<div class="sliders">
+			<div class="genCounter">Generation: 0</div>
+			<div class="sliderWrapper">
+				<i class="fas fa-tachometer-alt icon"></i>
+				<input type="range" min="1" max="10" value="3" class="speedSlider">
+			</div>
+		</div>
 
 	</div>
 
@@ -21,7 +31,7 @@
 		<table class="main-table">
 		{% for i in range(75) %}
 			<tr>
-			{% for i in range(125) %}
+			{% for i in range(150) %}
 				<td></td>	
 			{%endfor%}
 			</tr>

@@ -1,13 +1,22 @@
 // GAME OF LIFE
 // ------------------------------------------------------
-
 // creates default starting grids
-grid = []
-gridOutput = []
-conditioner = true
-for(var i = 0; i < 75; i++){
-	grid.push(new Array(125).fill(0))
-	gridOutput.push(new Array(125).fill(0))
+var grid = []
+var gridOutput = []
+var conditioner = true
+var speed = 150
+var width = 75
+var height = 150
+var generation = 0
+
+var speedSlider = document.querySelector(".speedSlider")
+speedSlider.oninput = function(){
+	speed = speedSlider.value * 50
+}
+
+for(var i = 0; i < width; i++){
+	grid.push(new Array(height).fill(0))
+	gridOutput.push(new Array(height).fill(0))
 }
 
 // sleep function to slow down execution
@@ -41,7 +50,9 @@ table.addEventListener('click', (event) => {
 
 // Resets the grid, sets all background colors to starting and resets grid to off
 function resetGrid(){
+	generation = 0
 	conditioner = false
+	document.querySelector(".genCounter").innerText = "Generation: " + generation
 	for(var i = 0, row; row = table.rows[i]; i++){
 		for(var j = 0, col; col = row.cells[j]; j++){
 			col.style.backgroundColor = "#c7c7c7";
@@ -59,15 +70,17 @@ async function execute(){
 		updateGrid()
 
 		// store and render output
-		for(var i = 0; i < 75; i++){
-			for(var j = 0; j < 125; j++){
+		for(var i = 0; i < width; i++){
+			for(var j = 0; j < height; j++){
 				gridOutput[i][j] = grid[i][j]
 			}
 		}
 
 		// call to a function to render the grid onto the screen
 		renderGrid()
-		await sleep(100)
+		generation += 1
+		document.querySelector(".genCounter").innerText = "Generation: " + generation
+		await sleep(speed)
 
 	}
 }
@@ -87,11 +100,11 @@ function renderGrid(){
 
 // updates the grid to the next generation
 function updateGrid(){
-	for(var i = 0; i < 75; i++){
-		for(var j = 0; j < 125; j++){
-			var neighbors = gridOutput[mod(i-1, 75)][mod(j-1, 125)] + gridOutput[i][mod(j-1, 125)] + gridOutput[mod(i+1, 75)][mod(j-1, 125)] +
-					gridOutput[mod(i-1, 75)][j]   + 			    	         gridOutput[mod(i+1, 75)][j] + 
-					gridOutput[mod(i-1, 75)][mod(j+1, 125)] + gridOutput[i][mod(j+1, 125)] + gridOutput[mod(i+1, 75)][mod(j+1, 125)]
+	for(var i = 0; i < width; i++){
+		for(var j = 0; j < height; j++){
+			var neighbors = gridOutput[mod(i-1, width)][mod(j-1, height)] + gridOutput[i][mod(j-1, height)] + gridOutput[mod(i+1, width)][mod(j-1, height)] +
+					gridOutput[mod(i-1, width)][j]   + 			    	         gridOutput[mod(i+1, 75)][j] + 
+					gridOutput[mod(i-1, width)][mod(j+1, height)] + gridOutput[i][mod(j+1, height)] + gridOutput[mod(i+1, width)][mod(j+1, height)]
 
 			if(gridOutput[i][j]){
 				grid[i][j] = neighbors == 2 || neighbors == 3
@@ -110,9 +123,9 @@ function pauseExecution(){
 // fills the grid with randomly generated values
 function generateRandom(){
 	resetGrid()
-	for(var i = 0; i < 75; i++){
-		for(var j = 0; j < 125; j++){
-			var rand = Math.round(Math.random())
+	for(var i = 0; i < width; i++){
+		for(var j = 0; j < height; j++){
+			var rand = Math.random() > .25 ? 0: 1
 			grid[i][j] = rand;
 			gridOutput[i][j] = rand;
 		}
